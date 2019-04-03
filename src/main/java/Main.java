@@ -1,5 +1,4 @@
-import consumer.MyConsumer;
-import producer.MyProducer;
+import gateway.OrderGateway;
 
 /**
  * @author Max Meijer
@@ -8,7 +7,7 @@ import producer.MyProducer;
 public class Main {
 
     public static void main(String[] args) {
-        MyProducer producer = new MyProducer();
+        OrderGateway producer = new OrderGateway();
         producer.send();
     }
 }
