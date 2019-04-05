@@ -35,6 +35,10 @@ public class Order implements Serializable {
         this.items = items;
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
     public Date getOrderTime() {
         return orderTime;
     }

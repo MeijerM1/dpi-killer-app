@@ -4,6 +4,7 @@ import domain.*;
 import messaging.gateway.TableOrderGateway;
 
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,8 +17,10 @@ import java.util.List;
 public class TableClient {
     private static TableOrderGateway gateway = new TableOrderGateway("TableOrder", "OrderTable");
     private static List<Item> items = new ArrayList<>();
+    private static int tableNumber;
 
     public static void main(String[] args) {
+        tableNumber  = Integer.parseInt(args[0]);
         initialiseItems();
         for (Item item : items) {
             System.out.println(item);
@@ -26,7 +29,7 @@ public class TableClient {
         Order order = new Order();
         order.addItem(items.get(0));
         order.setOrderTime(new Date());
-        order.setTableNumber(1);
+        order.setTableNumber(tableNumber);
 
         gateway.sendOrder(order);
     }
@@ -35,13 +38,13 @@ public class TableClient {
         Dish pizza = new Dish();
         pizza.setName("Pizza");
         Ingredient dough = new Ingredient();
-        dough.setName("Dough");
+        dough.setName("dough");
         dough.setAmount(1);
         Ingredient sauce = new Ingredient();
-        sauce.setName("Sauce");
+        sauce.setName("sauce");
         sauce.setAmount(1);
         Ingredient cheese = new Ingredient();
-        cheese.setName("Cheese");
+        cheese.setName("cheese");
         cheese.setAmount(1);
         pizza.setIngredients(Arrays.asList(dough, sauce, cheese));
 

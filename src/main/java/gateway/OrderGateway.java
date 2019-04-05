@@ -2,7 +2,9 @@ package gateway;
 
 import dal.OrderRepository;
 import domain.Ingredient;
+import domain.Item;
 import domain.Order;
+import domain.Stock;
 import messaging.gateway.TableOrderGateway;
 
 import javax.jms.JMSException;
@@ -18,9 +20,9 @@ import java.util.List;
  */
 public class OrderGateway {
 
-    private OrderRepository orderRepository = new OrderRepository();
-    private List<Ingredient> stock = new ArrayList<>();
+    private static OrderRepository orderRepository = new OrderRepository();
     private static TableOrderGateway gateway = new TableOrderGateway("OrderTable", "TableOrder");
+    private static Stock stock = new Stock();
 
     public static void main(String[] args) {
         gateway.addListener(new MessageListener() {
@@ -29,6 +31,7 @@ public class OrderGateway {
                 ObjectMessage object = (ObjectMessage) message;
                 try {
                     Order order = (Order) object.getObject();
+                    handleOrder(order);
                     System.out.println(order);
                 } catch (JMSException e) {
                     e.printStackTrace();
@@ -37,7 +40,19 @@ public class OrderGateway {
         });
     }
 
-    public void send() {
+    private static void handleOrder(Order order) {
+        for (Item i: order.getItems()) {
+            if(!stock.hasStock(i)) {
+                // TODO handle no stock for order
+                System.out.println("WE DONT HAVE THE INGREDIENTS");
+                return;
+            }
+        }
+        // remove ingredients from stock
+        stock.useIngredientsForOrder(order);
 
+        orderRepository.add(order);
+
+        // TODO send order to kitchen or bar
     }
 }
