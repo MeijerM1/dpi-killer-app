@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class Item implements Serializable {
     private int id = 0;
     private String name;
-    private boolean isAvialable = true;
+    private boolean isAvailable = true;
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Item() {
@@ -34,12 +34,12 @@ public abstract class Item implements Serializable {
         this.name = name;
     }
 
-    public boolean isAvialable() {
-        return isAvialable;
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
-    public void setAvialable(boolean avialable) {
-        isAvialable = avialable;
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     public List<Ingredient> getIngredients() {
@@ -54,7 +54,7 @@ public abstract class Item implements Serializable {
     public String toString() {
         return "Item{" +
                 "name='" + name + '\'' +
-                ", isAvialable=" + isAvialable +
+                ", isAvailable=" + isAvailable +
                 ", ingredients=" + ingredients +
                 '}';
     }

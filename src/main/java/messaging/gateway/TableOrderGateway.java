@@ -29,4 +29,8 @@ public class TableOrderGateway {
         sender.sendMessage(message);
     }
 
+    public void sendStatusUpdate(String text) {
+        Message message = sender.createTextMessage(text);
+        sender.sendMessage(message);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * Created on 03/04/2019
  */
 public class Order implements Serializable {
-    private int id;
+    private int id = -1;
     private List<Item> items = new ArrayList<>();
     private Date orderTime;
     private Date completeTime;
@@ -72,5 +72,14 @@ public class Order implements Serializable {
                 ", completeTime=" + completeTime +
                 ", tableNumber=" + tableNumber +
                 '}';
+    }
+
+    public Order copy() {
+        Order order = new Order();
+        order.setTableNumber(tableNumber);
+        order.setOrderTime(orderTime);
+        order.setId(id);
+
+        return order;
     }
 }

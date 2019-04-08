@@ -23,6 +23,16 @@ public class MessageSenderGateway extends Messenger {
         return null;
     }
 
+    public Message createTextMessage(String message) {
+        try {
+            return session.createTextMessage(message);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public void sendMessage(Message message) {
         try {
             producer.send(message);

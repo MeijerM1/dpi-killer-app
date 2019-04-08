@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 public class Stock {
     private static List<Ingredient> currentStock = new ArrayList<>();
 
-    public Stock() {
-        initStock();
+    public Stock(int amount) {
+        initStock(amount);
     }
 
     private int getIngredientAmount(Ingredient i) {
@@ -23,22 +23,22 @@ public class Stock {
 
 
     // Initialise current stock with some ingredients
-    private void initStock() {
+    private void initStock(int amount) {
         Ingredient dough = new Ingredient();
         dough.setName("dough");
-        dough.setAmount(100);
+        dough.setAmount(amount);
         currentStock.add(dough);
         Ingredient cheese = new Ingredient();
         cheese.setName("cheese");
-        cheese.setAmount(100);
+        cheese.setAmount(amount);
         currentStock.add(cheese);
         Ingredient sauce = new Ingredient();
         sauce.setName("sauce");
-        sauce.setAmount(100);
+        sauce.setAmount(amount);
         currentStock.add(sauce);
         Ingredient sugar = new Ingredient();
         sugar.setName("sugar");
-        sugar.setAmount(100);
+        sugar.setAmount(amount);
         currentStock.add(sugar);
     }
 

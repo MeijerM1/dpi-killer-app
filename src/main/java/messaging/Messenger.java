@@ -66,6 +66,30 @@ abstract class Messenger {
         } catch (NamingException | JMSException e) {
             e.printStackTrace();
         }
+    }
 
+    // TODO fix topic
+    private void sertupTopic(String topicName) {
+        try {
+            Properties props = new Properties();
+            props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                    "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+
+            props.setProperty(Context.PROVIDER_URL, "tcp://localhost:61616");
+
+            props.put(("queue." + queueName), queueName);
+
+            Context jndiContext = new InitialContext(props);
+            ActiveMQConnectionFactory connectionFactory = (ActiveMQConnectionFactory) jndiContext
+                    .lookup("ConnectionFactory");
+            //connectionFactory.setTrustAllPackages(true);
+            connection = connectionFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            Topic topic = session.createTopic(topicName);
+            // TopicSubscriber s = session.createDurableSubscriber(topic, );
+        } catch(Exception e) {
+
+        }
     }
 }
