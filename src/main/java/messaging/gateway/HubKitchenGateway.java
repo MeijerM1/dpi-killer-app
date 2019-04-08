@@ -10,7 +10,7 @@ import javax.jms.Message;
  */
 public class HubKitchenGateway extends Gateway {
     public HubKitchenGateway(String receiverQueue, String senderQueue) {
-        super(receiverQueue, senderQueue);
+        super(receiverQueue, senderQueue, false, false);
     }
 
     public void sendOrderToKitchen(Order order) {

@@ -14,9 +14,9 @@ public class Gateway {
     public MessageReceiverGateway receiver;
     public MessageSenderGateway sender;
 
-    public Gateway(String receiverQueue, String senderQueue) {
-        receiver = new MessageReceiverGateway(receiverQueue);
-        sender = new MessageSenderGateway(senderQueue);
+    public Gateway(String receiverQueue, String senderQueue, boolean useSenderTopic, boolean useReceiverTopic) {
+        receiver = new MessageReceiverGateway(receiverQueue, useSenderTopic, useReceiverTopic);
+        sender = new MessageSenderGateway(senderQueue, useSenderTopic, useReceiverTopic);
     }
 
     public void addListener(MessageListener listener) {

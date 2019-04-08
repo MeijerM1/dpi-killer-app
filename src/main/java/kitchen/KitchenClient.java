@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author Max Meijer
  * Created on 27/03/2019
  */
+@SuppressWarnings("Duplicates")
 public class KitchenClient {
     private static final Logger LOGGER = Logger.getLogger("KitchenClient");
     private static HubKitchenGateway gateway = new HubKitchenGateway("HubKitchen", "KitchenHub");
@@ -42,12 +44,14 @@ public class KitchenClient {
         int id = in.nextInt();
 
         if(id > -1) {
-            LOGGER.log(Level.INFO,"Complete order: " + id);
             completeOrder(id);
         }
     }
-    private static void completeOrder(int orderId) {
-        gateway.completeOrder(orderId);
+
+    private static void completeOrder(int id) {
+        LOGGER.log(Level.INFO,"Complete order: " + id);
+        orders = orders.stream().filter(o -> o.getId() != id).collect(Collectors.toList());
+        gateway.completeOrder(id);
     }
 
     private static void handleOrder(Order order) {

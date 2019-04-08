@@ -14,10 +14,11 @@ import java.util.logging.Logger;
  * @author Max Meijer
  * Created on 27/02/2019
  */
+@SuppressWarnings("Duplicates")
 public class OrderHub {
     private final static Logger LOGGER = Logger.getLogger("OrderHub");
     private static OrderRepository orderRepository = new OrderRepository();
-    private static TableOrderGateway tableGateway = new TableOrderGateway("HubTable", "TableHub");
+    private static TableOrderGateway tableGateway = new TableOrderGateway("HubTable", "TableHub", true, false);
     private static HubKitchenGateway kitchenGateway = new HubKitchenGateway("KitchenHub", "HubKitchen");
     private static BarHubGateway barGateway = new BarHubGateway("BarHub", "HubBar");
     private static Stock stock = new Stock(100);
@@ -50,6 +51,19 @@ public class OrderHub {
                 }
             }
         });
+
+        barGateway.addListener(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                TextMessage textMessage = (TextMessage) message;
+                try {
+                    int orderId = Integer.parseInt(textMessage.getText());
+                    handleBarComplete(orderId);
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private static void handleKitchenComplete(int orderId) {
@@ -57,9 +71,23 @@ public class OrderHub {
         aggregator.completeKitchen(orderId);
 
         if(aggregator.orderComplete(orderId)) {
-            LOGGER.log(Level.INFO, "Order complete");
-            tableGateway.sendStatusUpdate("Order ready");
+            completeOrder(orderId);
         }
+    }
+
+    private static void handleBarComplete(int orderId) {
+        LOGGER.log(Level.INFO, "Bar order completed: " + orderId);
+        aggregator.completeBar(orderId);
+
+        if(aggregator.orderComplete(orderId)) {
+            completeOrder(orderId);
+        }
+
+    }
+
+    private static void completeOrder(int orderId) {
+        LOGGER.log(Level.INFO, "Order " + orderId + " complete");
+        tableGateway.sendStatusUpdate(aggregator.getTableNumberForOrder(orderId), "Order ready");
     }
 
     private static void handleOrder(Order order) {

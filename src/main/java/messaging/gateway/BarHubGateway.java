@@ -11,7 +11,7 @@ import javax.jms.Message;
 public class BarHubGateway extends Gateway{
 
     public BarHubGateway(String receiverQueue, String senderQueue) {
-        super(receiverQueue, senderQueue);
+        super(receiverQueue, senderQueue, false, false);
     }
 
     public void sendOrder(Order order ) {

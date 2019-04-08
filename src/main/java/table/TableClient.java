@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class TableClient {
     private static final Logger LOGGER = Logger.getLogger("TableClient");
-    private static TableOrderGateway gateway = new TableOrderGateway("TableHub", "HubTable");
+    private static TableOrderGateway gateway = new TableOrderGateway("TableHub", "HubTable", false, true);
     private static List<Item> items = new ArrayList<>();
     private static int tableNumber;
 
@@ -30,11 +30,21 @@ public class TableClient {
         gateway.addListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                TextMessage text = (TextMessage) message;
+                int messageTableNumber = -1;
                 try {
-                    handleMessage(text.getText());
+                    messageTableNumber = message.getIntProperty("tableNumber");
                 } catch (JMSException e) {
                     e.printStackTrace();
+                }
+                if(messageTableNumber != tableNumber) {
+                    LOGGER.log(Level.INFO, "Got a message for table: " + messageTableNumber + ", ignoring");
+                } else {
+                    TextMessage text = (TextMessage) message;
+                    try {
+                        handleMessage(text.getText());
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -46,8 +56,8 @@ public class TableClient {
         }
 
         Order order = new Order();
-        order.addItem(items.get(0));
-        // order.addItem(items.get(1));
+        order.addItem(items.get(0)); // Pizza
+        //order.addItem(items.get(1)); // Coffee
         order.setOrderTime(new Date());
         order.setTableNumber(tableNumber);
 

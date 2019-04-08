@@ -12,6 +12,7 @@ import java.util.Properties;
  * @author Max Meijer
  * Created on 06/02/2019
  */
+@SuppressWarnings("Duplicates")
 abstract class Messenger {
 
     private Connection connection;
@@ -25,10 +26,14 @@ abstract class Messenger {
 
     private String queueName;
     private boolean isReceiver;
+    private boolean useSenderTopic;
+    private boolean useReceiverTopic;
 
-    public Messenger(boolean isReceiver, String queue) {
+    public Messenger(boolean isReceiver, String queue, boolean useSenderTopic, boolean useReceiverTopic) {
         this.queueName = queue;
         this.isReceiver = isReceiver;
+        this.useSenderTopic = useSenderTopic;
+        this.useReceiverTopic = useReceiverTopic;
 
         setup();
     }
@@ -51,15 +56,25 @@ abstract class Messenger {
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             if(isReceiver) {
-                // connect to the receiver destination
-                receiveDestination = (Destination) jndiContext.lookup(queueName);
-                consumer = session.createConsumer(receiveDestination);
+                if(useReceiverTopic) {
+                    Topic topic = session.createTopic(queueName);
+                    consumer = session.createConsumer(topic);
+                } else {
+                    // connect to the receiver destination
+                    receiveDestination = (Destination) jndiContext.lookup(queueName);
+                    consumer = session.createConsumer(receiveDestination);
+                }
 
                 connection.start(); // this is needed to start receiving messages
             } else {
-                // connect to the receiver destination
-                sendDestination = (Destination) jndiContext.lookup(queueName);
-                producer = session.createProducer(sendDestination);
+                if(useSenderTopic) {
+                    Topic topic = session.createTopic(queueName);
+                    producer = session.createProducer(topic);
+                } else {
+                    // connect to the receiver destination
+                    sendDestination = (Destination) jndiContext.lookup(queueName);
+                    producer = session.createProducer(sendDestination);
+                }
             }
 
 
@@ -68,8 +83,7 @@ abstract class Messenger {
         }
     }
 
-    // TODO fix topic
-    private void sertupTopic(String topicName) {
+    private void setupTopic(String topicName) {
         try {
             Properties props = new Properties();
             props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
@@ -87,7 +101,7 @@ abstract class Messenger {
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             Topic topic = session.createTopic(topicName);
-            // TopicSubscriber s = session.createDurableSubscriber(topic, );
+            consumer = session.createConsumer(topic);
         } catch(Exception e) {
 
         }

@@ -9,8 +9,8 @@ import java.io.Serializable;
  * Created on 13/02/2019
  */
 public class MessageSenderGateway extends Messenger {
-    public MessageSenderGateway(String queue) {
-        super(false, queue);
+    public MessageSenderGateway(String queue, boolean useSenderTopic, boolean useReceiverTopic) {
+        super(false, queue, useSenderTopic, useReceiverTopic);
     }
 
     public Message createMessage(Serializable object) {

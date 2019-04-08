@@ -4,6 +4,7 @@ import domain.Order;
 import messaging.MessageReceiverGateway;
 import messaging.MessageSenderGateway;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
@@ -11,13 +12,9 @@ import javax.jms.MessageListener;
  * @author Max Meijer
  * Created on 03/04/2019
  */
-public class TableOrderGateway {
-    private MessageReceiverGateway receiver;
-    private MessageSenderGateway sender;
-
-    public TableOrderGateway(String senderQueue, String receiverQueue) {
-        receiver = new MessageReceiverGateway(receiverQueue);
-        sender = new MessageSenderGateway(senderQueue);
+public class TableOrderGateway extends Gateway {
+    public TableOrderGateway(String receiverQueue, String senderQueue, boolean useSenderTopic, boolean useReceiverTopic) {
+        super(receiverQueue, senderQueue, useSenderTopic, useReceiverTopic);
     }
 
     public void addListener(MessageListener listener) {
@@ -29,8 +26,13 @@ public class TableOrderGateway {
         sender.sendMessage(message);
     }
 
-    public void sendStatusUpdate(String text) {
+    public void sendStatusUpdate(int tableNumber, String text) {
         Message message = sender.createTextMessage(text);
+        try {
+            message.setIntProperty("tableNumber", tableNumber);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
         sender.sendMessage(message);
     }
 }

@@ -9,8 +9,8 @@ import javax.jms.MessageListener;
  */
 public class MessageReceiverGateway extends Messenger {
 
-    public MessageReceiverGateway(String queue) {
-        super(true, queue);
+    public MessageReceiverGateway(String queue, boolean useSenderTopic, boolean useReceiverTopic) {
+        super(true, queue, useSenderTopic, useReceiverTopic);
     }
 
     public void addReceiver(MessageListener listener) {
