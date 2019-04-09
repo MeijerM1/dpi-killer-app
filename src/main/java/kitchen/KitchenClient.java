@@ -40,11 +40,13 @@ public class KitchenClient {
         });
 
         System.out.println("Enter an id to complete the order ");
-        Scanner in = new Scanner(System.in);
-        int id = in.nextInt();
+        while (true) {
+            Scanner in = new Scanner(System.in);
+            int id = Integer.parseInt(in.next());
 
-        if(id > -1) {
-            completeOrder(id);
+            if(id > -1) {
+                completeOrder(id);
+            }
         }
     }
 

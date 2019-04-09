@@ -1,6 +1,8 @@
 package table;
 
 import domain.*;
+import messaging.gateway.DeadLetterGateway;
+import messaging.gateway.ErrorGateway;
 import messaging.gateway.TableOrderGateway;
 
 
@@ -23,10 +25,19 @@ import java.util.logging.Logger;
 public class TableClient {
     private static final Logger LOGGER = Logger.getLogger("TableClient");
     private static TableOrderGateway gateway = new TableOrderGateway("TableHub", "HubTable", false, true);
+    private static ErrorGateway errorGateway = new ErrorGateway("DeadTable");
     private static List<Item> items = new ArrayList<>();
     private static int tableNumber;
 
     public static void main(String[] args) {
+        tableNumber  = Integer.parseInt(args[0]);
+        LOGGER.log(Level.INFO, "Started table: " + tableNumber);
+        initialiseItems();
+        for (Item item : items) {
+            System.out.println(item);
+        }
+
+
         gateway.addListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
@@ -49,11 +60,18 @@ public class TableClient {
             }
         });
 
-        tableNumber  = Integer.parseInt(args[0]);
-        initialiseItems();
-        for (Item item : items) {
-            System.out.println(item);
-        }
+        errorGateway.receiver.addReceiver(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                try {
+                    int table =message.getIntProperty("tableNumber");
+
+                    LOGGER.log(Level.INFO, "Received an error for table: " + table);
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         Order order = new Order();
         order.addItem(items.get(0)); // Pizza

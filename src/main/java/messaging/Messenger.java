@@ -74,6 +74,7 @@ abstract class Messenger {
                     // connect to the receiver destination
                     sendDestination = (Destination) jndiContext.lookup(queueName);
                     producer = session.createProducer(sendDestination);
+                    producer.setTimeToLive(5000);
                 }
             }
 

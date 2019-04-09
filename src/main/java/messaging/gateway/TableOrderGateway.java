@@ -23,6 +23,11 @@ public class TableOrderGateway extends Gateway {
 
     public void sendOrder(Order order) {
         Message message = sender.createMessage(order);
+        try {
+            message.setIntProperty("tableNumber", order.getTableNumber());
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
         sender.sendMessage(message);
     }
 
