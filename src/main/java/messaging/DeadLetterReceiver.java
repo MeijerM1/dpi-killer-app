@@ -1,4 +1,4 @@
-package messaging.gateway;
+package messaging;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.jndi.ReadOnlyContext;
@@ -18,9 +18,9 @@ public class DeadLetterReceiver {
     private Connection connection;
     Session session;
 
-    Destination receiveDestination;
+    public Destination receiveDestination;
 
-    MessageConsumer consumer; // for receiving messages
+    public MessageConsumer consumer; // for receiving messages
 
     private String queueName;
     private boolean isReceiver;

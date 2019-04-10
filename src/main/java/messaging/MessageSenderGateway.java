@@ -36,7 +36,7 @@ public class MessageSenderGateway extends Messenger {
     public void sendMessage(Message message) {
         try {
             producer.send(message);
-            System.out.println("Message send with corr. id: " + message.getJMSCorrelationID());
+            // System.out.println("Message send with corr. id: " + message.getJMSCorrelationID());
         } catch (JMSException e) {
             System.out.println("Error sending message");
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package table;
 
 import domain.*;
-import messaging.gateway.DeadLetterGateway;
 import messaging.gateway.ErrorGateway;
 import messaging.gateway.TableOrderGateway;
 
@@ -10,7 +9,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -67,6 +65,11 @@ public class TableClient {
                     int table =message.getIntProperty("tableNumber");
 
                     LOGGER.log(Level.INFO, "Received an error for table: " + table);
+                    if(table != tableNumber) {
+                        return;
+                    }
+
+                    LOGGER.log(Level.INFO, "Something went wrong, please contact a employee");
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
@@ -75,7 +78,7 @@ public class TableClient {
 
         Order order = new Order();
         order.addItem(items.get(0)); // Pizza
-        //order.addItem(items.get(1)); // Coffee
+        // order.addItem(items.get(1)); // Coffee
         order.setOrderTime(new Date());
         order.setTableNumber(tableNumber);
 
@@ -110,5 +113,15 @@ public class TableClient {
         coffee.setIngredients(Arrays.asList(sugar));
 
         items.add(coffee);
+
+        Drink vodka = new Drink();
+        vodka.setName("Vodka");
+        Ingredient potato = new Ingredient();
+        potato.setName("Potato");
+        potato.setAmount(1);
+        vodka.setIngredients(Arrays.asList(potato));
+
+        items.add(vodka);
+
     }
 }

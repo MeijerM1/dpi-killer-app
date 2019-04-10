@@ -1,8 +1,7 @@
 package messaging.gateway;
 
+import messaging.DeadLetterReceiver;
 import messaging.MessageSenderGateway;
-import org.apache.activemq.store.MessageStore;
-import org.apache.activemq.store.memory.MemoryMessageStore;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
